@@ -12,7 +12,7 @@ useEffect(()=>{
 
     if(searchQuery.length > 0){
         setFilterdProducts(products.filter(
-        product=> product.name.toLowercase().includes(searchQuery.toLowercase())
+        product=> product.name.toLowerCase().includes(searchQuery.toLowerCase())
 ))}else{
     setFilterdProducts(products)
 }
