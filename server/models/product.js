@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema({
         required:true
     },
 
-    discription :{
+    description :{
 
         type:Array,
         required:true,
@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema({
 
 
     },
-    Image:{
+    image:{
         type:Array,
         required:true 
 
@@ -43,6 +43,6 @@ const productSchema = new mongoose.Schema({
     },
 },{timestamps:true})
 
-const product = mongoose.models.product|| mongoose.model('product',productSchema)
+const Product = mongoose.models.product|| mongoose.model('product',productSchema)
 
-export default  product
+export default  Product

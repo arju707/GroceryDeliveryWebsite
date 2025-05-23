@@ -1,4 +1,4 @@
-
+import jwt from "jsonwebtoken"
 
 //sellerLogin : /api/seller/login
 
@@ -9,7 +9,7 @@ export const sellerLogin = async(req,res)=>{
         const {email, password} = req.body;
 
     if(password === process.env.SELLER_PASSWORD && email === process.env.SELLER_EMAIL){
-        const token = Jwt.sign({email},process.env.JWT_SECRET, {expiresIn: '7d'});
+        const token = jwt.sign({email},process.env.JWT_SECRET, {expiresIn: '7d'});
 
         res.cookie('sellerToken', token, {
   httpOnly: true,
@@ -40,11 +40,14 @@ export const sellerLogin = async(req,res)=>{
 
 export const isSellerAuth = async (req,res)=>{
     try {
+
+        console.log("cookies recived", req.cookie);
        
         return res.json({success: true})
     } catch (error) {
 
          console.log(error.message);
+         console.log("cookie blocked ", req.cookie)
         res.json({success:false, message:error.message}); 
         
     }
