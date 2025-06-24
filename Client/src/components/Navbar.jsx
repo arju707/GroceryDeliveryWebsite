@@ -20,8 +20,12 @@ export default function Navbar() {
 
   const logout = async () => {
     try {
-      await axios.get('/api/user/logout');
-      localStorage.removeItem('token');
+     console.log("going to api all ofo logout");
+     await axios.get('/api/user/logout');
+     
+     localStorage.removeItem('token');
+     localStorage.removeItem('isAuth')
+     console.log("removed the localstorege item");
       setUser(null);
       navigate('/');
       toast.success('Logged out successfully');

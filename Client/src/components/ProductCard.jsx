@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
       <div
         onClick={() => {
           navigate(
-            `/products/${product.category.toLowerCase()}/${product._id}`
+            `/products/${product.category}/${product._id}`
           );
           scrollTo(0, 0);
         }}

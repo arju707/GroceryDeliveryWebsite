@@ -5,6 +5,6 @@ import { updateCart } from "../controllers/cartController.js";
 
 const cartRouter = express.Router();
 
-cartRouter.post('/update', authUser, updateCart)
+cartRouter.post('/update', updateCart)
 
 export default cartRouter;

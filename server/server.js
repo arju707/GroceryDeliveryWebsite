@@ -10,6 +10,12 @@ import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import adressRouter from "./routes/adressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import morgan from "morgan";
+
+
+
+// Use Morgan middleware
+
 
 const app = express();
 
@@ -21,10 +27,13 @@ await connectCloudinary();
 const allowedOrigins = ["http://localhost:5173"];
 
 //midleware
+app.use(morgan('dev')); // 'dev' is a predefined format (concise output)
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+
 
 app.get("/", (req, res) => res.send("API IS WORKING"));
 

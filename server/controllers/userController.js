@@ -26,14 +26,18 @@ export const register = async (req, res) => {
       expiresIn: "30m",
     });
 
-    const refreshToken = jwt.sign({ userId, role: userRole }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+    const refreshToken = jwt.sign(
+      { userId, role: userRole },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
 
     //refresh token setup in httponly cookies
-     res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-      });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
 
     // Return token in response instead of setting cookie
     return res.json({
@@ -43,6 +47,7 @@ export const register = async (req, res) => {
         id: user._id,
         email: user.email,
         name: user.name,
+        cartItems:user.cartItems
       },
     });
   } catch (error) {
@@ -75,21 +80,32 @@ export const login = async (req, res) => {
       return res.json({ success: false, message: "Invalid email or password" });
     }
 
+    console.log("reahced here 1");
+    
+    
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-
-
-    const refreshToken = jwt.sign({ userId, role: userRole }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-
+    console.log("reahced here 2");
+    
+    const refreshToken = jwt.sign(
+      { id:user._id, },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
+    console.log("reahced here 3");
+    
     //refresh token setup in httponly cookies
-     res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-      });
-
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+    
+    console.log("reahced here 4");
     // Return token in response instead of setting cookie
+    console.log(user,"user detials");
+    
     return res.json({
       success: true,
       token: token,
@@ -97,7 +113,9 @@ export const login = async (req, res) => {
         id: user._id,
         email: user.email,
         name: user.name,
+        cartItems:user.cartItems
       },
+
     });
   } catch (error) {
     console.log(error.message);
@@ -108,32 +126,34 @@ export const login = async (req, res) => {
 // Check auth - now expects token in Authorization header
 export const isAuth = async (req, res) => {
   try {
-    // Get token from Authorization header
-    // const authHeader = req.headers.authorization;
+   const refreshToken = req.cookies.refreshToken;
+   
+    if (!refreshToken)
+      res.status(403).json({ error: "Refresh tokekn required" });
 
-    // if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    //   return res.json({ success: false, message: "No token provided" });
-    // }
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+  console.log(refreshToken,"from reefresh token");
+  
+    const userId = decoded.id;
+    console.log(userId,"user id from isAuth");
+    
 
-    // const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    const id = req.userId;
-    console.log(id, "id inside the auth chdeck function");
-    // Verify token
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(userId);
 
-    const user = await User.findById(id).select("-password");
-    console.log(user, "user inside the fun");
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
-    if (!user) {
-      return res.json({ success: false, message: "User not found" });
-    }
+
 
     return res.json({
       success: true,
+      token: token,
       user: {
-        id:user._id,
+        id: user._id,
         email: user.email,
         name: user.name,
+        cartItems:user.cartItems
       },
     });
   } catch (error) {
@@ -211,4 +231,10 @@ export const isAuthById = async (req, res) => {
     console.log(error.message);
     res.json({ success: false, message: error.message });
   }
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    
+  } catch (error) {}
 };

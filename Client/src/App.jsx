@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from './components/Navbar'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
@@ -19,9 +19,22 @@ import ProductList from './pages/seller/ProductList'
 import Orders from './pages/seller/Orders'
 
 const App = () => {
+ 
+  const {fetchUser} =useAppContext();
+  
+  useEffect(()=>{
 
-  
-  
+    const storedAuth = localStorage.getItem("isAuth");
+    console.log(storedAuth,"storeAuth");
+    
+    if(storedAuth){
+      console.log("going for fetfh user");
+      
+      fetchUser()
+    }
+
+
+  },[])
 
   const isSellerPath=useLocation().pathname.includes("seller")
 
