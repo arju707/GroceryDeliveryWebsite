@@ -21,6 +21,7 @@ function Login() {
 
       if (data.success) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('isAuth', true);
         setUser(data.user);
         navigate('/');
         setShowUserLogin(false);

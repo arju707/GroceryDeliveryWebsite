@@ -23,8 +23,17 @@ export const register = async (req, res) => {
     const user = await User.create({ name, email, password: hashedpassword });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "30m",
     });
+
+    const refreshToken = jwt.sign({ userId, role: userRole }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    //refresh token setup in httponly cookies
+     res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+      });
 
     // Return token in response instead of setting cookie
     return res.json({
@@ -69,6 +78,16 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
+
+    const refreshToken = jwt.sign({ userId, role: userRole }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    //refresh token setup in httponly cookies
+     res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+      });
 
     // Return token in response instead of setting cookie
     return res.json({
